@@ -15,3 +15,6 @@ echo "-----> Initializing"
 [ ! -s $1/app.json ] && cp app.json $1/app.json
 [ ! -s $1/index.js ] && cp index.js $1/index.js
 [ ! -s $1/Procfile ] && cp Procfile $1/Procfile
+
+mv $1/package.json $1/_package.json
+echo "{}" > $1/package.json
