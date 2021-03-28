@@ -1,3 +1,10 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir> <env-dir>
+
+BUILD_DIR=${1:-}
+CACHE_DIR=${2:-}
+ENV_DIR=${3:-}
+
 #!/bin/sh
 
 indent() {
@@ -5,12 +12,16 @@ indent() {
 }
 
 echo "-----> Initializing"
+echo "       BUILD_DIR"
+echo $BUILD_DIR | indent
+echo "       pwd"
+pwd
 
 # if hello.txt is empty, abort the build
-if [ ! -s $1/hello.txt ]; then
-  echo "hello.txt was empty" | indent
-  exit 1
-fi
+# if [ ! -s $1/hello.txt ]; then
+#  echo "hello.txt was empty" | indent
+#  exit 1
+# fi
 
 # replace hello with goodbye in a new file
-cat $1/hello.txt | sed -e "s/[Hh]ello/Goodbye/g" > $1/goodbye.txt
+# cat $1/hello.txt | sed -e "s/[Hh]ello/Goodbye/g" > $1/goodbye.txt
