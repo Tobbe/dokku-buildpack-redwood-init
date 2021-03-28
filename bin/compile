@@ -5,9 +5,7 @@ BUILD_DIR=${1:-}
 CACHE_DIR=${2:-}
 ENV_DIR=${3:-}
 
-#!/bin/sh
-
-echo "-----> Initializing"
+echo "------> Initializing"
 
 # Copy files to app unless they already exist
 [ ! -d $1/config ] && mkdir $1/config
@@ -16,5 +14,19 @@ echo "-----> Initializing"
 [ ! -s $1/index.js ] && cp index.js $1/index.js
 [ ! -s $1/Procfile ] && cp Procfile $1/Procfile
 
-mv $1/package.json $1/_package.json
-echo "{}" > $1/package.json
+apiVersion=$(jq '.dependencies["@redwoodjs/api"]' $1/api/package.json)
+echo "        Add api-server $apiVersion to api/package.json"
+
+jq ".dependencies[\"@redwoodjs/api-server\"] = $apiVersion" $1/api/package.json > $1/api/_package.json
+mv $1/api/_package.json $1/api/package.json
+
+coreVersion=$(jq '.devDependencies["@redwoodjs/core"]' $1/package.json)
+[ $coreVersion = "null" ] && coreVersion=$(jq '.dependencies["@redwoodjs/core"]' $1/package.json)
+
+echo "        Move core $coreVersion to regular dependency"
+
+cat $1/package.json | \
+  jq 'del(.devDependencies["@redwoodjs/core"])' | \
+  jq ".dependencies[\"@redwoodjs/core\"] = $coreVersion" | \
+  jq '.dependencies.pm2 = "^4.5.5"' > $1/_package.json
+mv $1/_package.json $1/package.json
