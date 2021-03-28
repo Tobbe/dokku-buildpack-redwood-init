@@ -16,6 +16,14 @@ echo "       BUILD_DIR"
 echo $BUILD_DIR | indent
 echo "       pwd"
 pwd
+ls -la
+
+# Copy files to app unless they already exist
+[ ! -d $1/config ] && mkdir $1/config
+[ ! -s $1/config/nginx.conf.erb ] && cp config/nginx.conf.erb $1/config/nginx.conf.erb
+[ ! -s $1/app.json ] && cp app.json $1/app.json
+[ ! -s $1/index.js ] && cp index.js $1/index.js
+[ ! -s $1/Procfile ] && cp Procfile $1/Procfile
 
 # if hello.txt is empty, abort the build
 # if [ ! -s $1/hello.txt ]; then
